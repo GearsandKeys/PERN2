@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const pool = require("../db");
+const bcrypt = require("bcrypt");
 // registering
 
 router.post("/register", async (req, res) => {
@@ -20,13 +21,17 @@ router.post("/register", async (req, res) => {
         //3. Bcrypt the user password
 
             const saltRound = 10; //How many times it will encrypt
-            const salt = await bcrypt.genSalt(saltRound);
+            const salt = await bcrypt.genSalt(saltRound); //generates salt
 
-            const bcryptPassword = bcrypt.hash(password, salt);
+            const bcryptPassword = await bcrypt.hash(password, salt); //this encrypts the password and generates hash, returned {} until I added await
 
         //4. enter the new user inside our database
 
-            const newUser = await pool.query("INSERT INTO user ")
+            const newUser = await pool.query("INSERT INTO users (user_name, user_email, user_password) VALUES ($1, $2, $3) RETURNING *", [name, email, bcryptPassword]);
+
+            res.json(newUser.rows[0]);
+
+
         //5. generating our jwt token
 
 
