@@ -67,8 +67,18 @@ router.post("/login", async (req, res) => {
 
         //3. check if incoming password is same as DB password
 
-        //4. If meets all conditions, give JWT token
+        const validPassword = await bcrypt.compare(password, user.rows[0].user_password);
 
+        console.log(validPassword);
+        
+        if (!validPassword){
+            return res.status(401).json("Password or Email is incorrect.");
+        }
+
+        //4. If meets all conditions, give JWT token
+        const token = jwtGenerator(user.rows[0].user_name);
+
+        res.json({ token });
 
     } catch (err) {
         console.error(err.message);
