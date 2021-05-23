@@ -2,12 +2,12 @@ const router = require("express").Router();
 const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utils/jwtGenerator");
+const validInfo = require("../middleware/validInfo");
+const authorization = require("../middleware/authorization");
 
-// registering
+// register route
 
-
-
-router.post("/register", async (req, res) => {
+router.post("/register", validInfo, async (req, res) => {
     try {
         //1. destructure the req.body (name, email, password)
 
@@ -51,7 +51,7 @@ router.post("/register", async (req, res) => {
 
 // Login Route
 
-router.post("/login", async (req, res) => {
+router.post("/login", validInfo, async (req, res) => {
     try {
         //1. Destructure the req.body
 
@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
 
         const validPassword = await bcrypt.compare(password, user.rows[0].user_password);
 
-        console.log(validPassword);
+        //console.log(validPassword);
         
         if (!validPassword){
             return res.status(401).json("Password or Email is incorrect.");
@@ -84,6 +84,15 @@ router.post("/login", async (req, res) => {
         console.error(err.message);
         res.status(500).send("Server Error");
     }
-})
+});
+
+router.get("/is-verify", authorization, async (req, res) => {
+    try {
+        res.json(true); //If verified, then return true
+    } catch (err) {
+        console.log(error.message);
+        res.status(500).send("Server Error");
+    }
+});
 
 module.exports = router;
