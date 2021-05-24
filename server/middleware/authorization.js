@@ -15,6 +15,8 @@ module.exports = async (req, res, next) => {
 
         // Check if token is fake
         const payload = jwt.verify(jwtToken, process.env.jwtSecret);
+        
+        //user is equal to data
         req.user = payload.user;
 
         next(); //If the response takes forever, could be because your middleware is missing the next();

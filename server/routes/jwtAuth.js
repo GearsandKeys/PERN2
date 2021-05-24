@@ -75,8 +75,8 @@ router.post("/login", validInfo, async (req, res) => {
             return res.status(401).json("Password or Email is incorrect.");
         }
 
-        //4. If meets all conditions, give JWT token
-        const token = jwtGenerator(user.rows[0].user_name);
+        //4. If meets all conditions, give JWT token using user_id so we can use it later
+        const token = jwtGenerator(user.rows[0].user_id);
 
         res.json({ token });
 

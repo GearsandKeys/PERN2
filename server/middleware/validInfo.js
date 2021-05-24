@@ -23,5 +23,5 @@ module.exports = (req, res, next) => {
       }
     }
   
-    next(); //Once evything is good to go, it continues with the route
+    next(); //Once everything is good to go, it continues with the route
   };
